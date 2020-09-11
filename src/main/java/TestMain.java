@@ -1,4 +1,5 @@
-import springbook.user.dao.NUserDao;
+import springbook.user.dao.DConnectionMaker;
+import springbook.user.dao.SimpleConnectionMaker;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
@@ -6,7 +7,9 @@ import java.sql.SQLException;
 
 public class TestMain {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        UserDao dao = new NUserDao();
+
+        SimpleConnectionMaker connectionMaker  = new DConnectionMaker();
+        UserDao dao = new UserDao(connectionMaker);
 
         User user = new User();
         user.setId("whiteship");
