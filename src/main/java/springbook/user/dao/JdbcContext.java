@@ -21,11 +21,21 @@ public class JdbcContext {
             ps = stmt.makePreparedStatement(c);
 
             ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
         } finally {
             if (ps != null) { try {ps.close();} catch (SQLException ignored) {}}
             if (c != null) { try { c.close(); } catch (SQLException ignored) {}}
         }
+    }
+
+    public void executeSql(final String query) throws SQLException {
+        workWithStatementStrategy(c -> c.prepareStatement(query));
+    }
+
+    public void executeSql(final String query, String... varargs) throws SQLException {
+        workWithStatementStrategy(c -> {
+            PreparedStatement ps = c.prepareStatement(query);
+            for (int i=0; i<varargs.length; i++) ps.setString(i+1, varargs[i]);
+            return ps;
+        });
     }
 }

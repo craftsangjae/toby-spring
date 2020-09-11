@@ -22,14 +22,8 @@ public class UserDao {
     }
 
     public void add(User user) throws SQLException {
-        jdbcContext.workWithStatementStrategy(c -> {
-            PreparedStatement ps = c.prepareStatement("INSERT INTO users(id, name, password) VALUES(?,?,?);");
-
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            return ps;
-        });
+        jdbcContext.executeSql("INSERT INTO users(id, name, password) VALUES(?,?,?);",
+                user.getId(), user.getName(), user.getPassword());
     }
 
     public User get(String id) throws SQLException, EmptyResultDataAccessException {
@@ -55,7 +49,7 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        jdbcContext.workWithStatementStrategy(c -> c.prepareStatement("delete from users"));
+        jdbcContext.executeSql("DELETE FROM users");
     }
 
     public int getCount() throws SQLException {
