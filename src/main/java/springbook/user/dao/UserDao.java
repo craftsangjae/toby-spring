@@ -26,7 +26,6 @@ public class UserDao {
         ps.setString(3, user.getPassword());
 
         ps.executeUpdate();
-
         ps.close();
         c.close();
     }
@@ -35,7 +34,6 @@ public class UserDao {
         Connection c = dataSource.getConnection();
         PreparedStatement ps = c.prepareStatement("SELECT * FROM users WHERE id = ?");
         ps.setString(1, id);
-
         ResultSet rs = ps.executeQuery();
         rs.next();
         User user = new User();
