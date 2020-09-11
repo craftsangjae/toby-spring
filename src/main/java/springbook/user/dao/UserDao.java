@@ -4,12 +4,12 @@ import springbook.user.domain.User;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import com.mysql.jdbc.Driver;
 
 
 public class UserDao {
 
     private DataSource dataSource;
+    private JdbcContext jdbcContext;
 
     public UserDao() {}
 
@@ -17,19 +17,19 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
+    public void setJdbcContext(JdbcContext jdbcContext) {
+        this.jdbcContext = jdbcContext;
+    }
+
     public void add(User user) throws SQLException {
-        Connection c = dataSource.getConnection();
+        jdbcContext.workWithStatementStrategy(c -> {
+            PreparedStatement ps = c.prepareStatement("INSERT INTO users(id, name, password) VALUES(?,?,?);");
 
-        PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO users(id, name, password) VALUES(?,?,?);");
-
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-        ps.close();
-        c.close();
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
+            return ps;
+        });
     }
 
     public User get(String id) throws SQLException, EmptyResultDataAccessException {
@@ -55,13 +55,7 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        Connection c = dataSource.getConnection();
-
-        PreparedStatement ps = c.prepareStatement("delete from users");
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
+        jdbcContext.workWithStatementStrategy(c -> c.prepareStatement("delete from users"));
     }
 
     public int getCount() throws SQLException {
