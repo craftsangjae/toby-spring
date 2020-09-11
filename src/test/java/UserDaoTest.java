@@ -1,8 +1,9 @@
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import springbook.user.dao.DaoFactory;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
@@ -10,27 +11,61 @@ import springbook.user.domain.User;
 import java.sql.SQLException;
 
 public class UserDaoTest {
+    private UserDao dao;
+    private User user1;
+    private User user2;
+    private User user3;
+
+    @Before
+    public void setUp() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        dao = context.getBean("userDao", UserDao.class);
+        user1 = new User("gyumee", "박성철", "springno1");
+        user2 = new User("leegw700", "이길원", "springno2");
+        user3 = new User("bumjin", "박범진", "springno3");
+    }
 
     @Test
     public void addAndGet() throws SQLException {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
-        User user1 = new User();
-        user1.setId("whiteship");
-        user1.setName("백기선");
-        user1.setPassword("married");
+        dao.deleteAll();
+        assertEquals(dao.getCount(), 0);
 
         dao.add(user1);
+        dao.add(user2);
+        assertEquals(dao.getCount(), 2);
 
-        User user2 = dao.get(user1.getId());
+        User userget1 = dao.get(user1.getId());
+        assertEquals(userget1.getId(), user1.getId());
+        assertEquals(userget1.getName(), user1.getName());
+        assertEquals(userget1.getPassword(), user1.getPassword());
 
-        assertEquals(user1.getId(), user2.getId());
-        assertEquals(user1.getName(), user2.getName());
-        assertEquals(user1.getPassword(), user2.getPassword());
+        User userget2 = dao.get(user2.getId());
+        assertEquals(userget2.getId(), user2.getId());
+        assertEquals(userget2.getName(), user2.getName());
+        assertEquals(userget2.getPassword(), user2.getPassword());
 
     }
 
+    @Test
+    public void count() throws SQLException {
+        dao.deleteAll();
+        assertEquals(dao.getCount(), 0);
+
+        dao.add(user1);
+        assertEquals(dao.getCount(), 1);
+
+        dao.add(user2);
+        assertEquals(dao.getCount(), 2);
+
+        dao.add(user3);
+        assertEquals(dao.getCount(), 3);
+    }
+
+    @Test(expected=EmptyResultDataAccessException.class)
+    public void getUserFailure() throws SQLException{
+        dao.deleteAll();
+        assertEquals(dao.getCount(), 0);
+        dao.get("1000");
+    }
 
 }
