@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Main-Class: TestMain
+Class-Path: cglib-2.2.jar junit-4.7.jar aopalliance-1.0.jar spring-aop-3
+ .2.18.RELEASE.jar mysql-connector-java-8.0.21.jar spring-context-suppor
+ t-3.2.18.RELEASE.jar spring-expression-3.2.18.RELEASE.jar spring-aop-3.
+ 2.18.RELEASE.jar spring-core-3.2.18.RELEASE.jar spring-context-3.2.18.R
+ ELEASE.jar spring-aspects-3.2.18.RELEASE.jar spring-instrument-3.2.18.R
+ ELEASE.jar spring-beans-3.2.18.RELEASE.jar spring-instrument-tomcat-3.2
+ .18.RELEASE.jar spring-jms-3.2.18.RELEASE.jar spring-orm-3.2.18.RELEASE
+ .jar spring-jdbc-3.2.18.RELEASE.jar spring-oxm-3.2.18.RELEASE.jar sprin
+ g-test-3.2.18.RELEASE.jar commons-logging-1.1.1.jar spring-tx-3.2.18.RE
+ LEASE.jar aopalliance-1.0.jar spring-context-3.2.18.RELEASE.jar mysql-c
+ onnector-java-8.0.21.jar protobuf-java-3.11.4.jar junit-4.7.jar spring-
+ beans-3.2.18.RELEASE.jar protobuf-java-3.11.4.jar spring-jdbc-3.2.18.RE
+ LEASE.jar spring-expression-3.2.18.RELEASE.jar spring-tx-3.2.18.RELEASE
+ .jar spring-test-3.2.18.RELEASE.jar cglib-2.2.jar asm-3.1.jar spring-co
+ re-3.2.18.RELEASE.jar commons-logging-1.1.1.jar asm-3.1.jar
+
