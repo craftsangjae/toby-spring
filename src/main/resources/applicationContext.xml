@@ -13,11 +13,10 @@
 
     <bean id="userDao" class="springbook.user.dao.UserDao">
         <property name="dataSource" ref="dataSource"/>
-        <property name="jdbcContext" ref="jdbcContext"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
 
-    <bean id="jdbcContext" class="springbook.user.dao.JdbcContext">
-        <property name="dataSource" ref="dataSource"/>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg ref="dataSource" />
     </bean>
-
 </beans>

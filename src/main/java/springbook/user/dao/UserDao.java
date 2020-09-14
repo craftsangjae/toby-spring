@@ -1,5 +1,10 @@
 package springbook.user.dao;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
@@ -9,65 +14,40 @@ import java.sql.*;
 public class UserDao {
 
     private DataSource dataSource;
-    private JdbcContext jdbcContext;
+
+    private JdbcTemplate jdbcTemplate;
 
     public UserDao() {}
 
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public void setJdbcContext(JdbcContext jdbcContext) {
-        this.jdbcContext = jdbcContext;
-    }
-
-    public void add(User user) throws SQLException {
-        jdbcContext.executeSql("INSERT INTO users(id, name, password) VALUES(?,?,?);",
+    public void add(User user) {
+        jdbcTemplate.update("INSERT INTO users(id, name, password) VALUES(?,?,?);",
                 user.getId(), user.getName(), user.getPassword());
     }
 
-    public User get(String id) throws SQLException, EmptyResultDataAccessException {
-        Connection c = dataSource.getConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT * FROM users WHERE id = ?");
-        ps.setString(1, id);
-        ResultSet rs = ps.executeQuery();
-
-        User user = null;
-        if (rs.next()) {
-            user = new User();
+    public User get(String id) throws EmptyResultDataAccessException {
+        String[] ids = {id};
+        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", ids,
+                (rs, i) -> {
+            User user = new User();
             user.setId(rs.getString("id"));
             user.setName(rs.getString("name"));
             user.setPassword(rs.getString("password"));
-        }
-        rs.close();
-        ps.close();
-        c.close();
-        if (user == null) {
-            throw new EmptyResultDataAccessException(1);
-        }
-        return user;
+            return user; });
     }
 
-    public void deleteAll() throws SQLException {
-        jdbcContext.executeSql("DELETE FROM users");
+    public void deleteAll() {
+        jdbcTemplate.update("DELETE FROM users");
     }
 
-    public int getCount() throws SQLException {
-        Connection c = dataSource.getConnection();
-
-        PreparedStatement ps =
-                c.prepareStatement("SELECT COUNT(*) FROM users");
-
-        ResultSet rs = ps.executeQuery();
-        int count = 0;
-        if (rs.next()) {
-            count = rs.getInt(1);
-        }
-
-        rs.close();
-        ps.close();
-        c.close();
-
-        return count;
+    public int getCount() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class);
     }
+
 }
