@@ -31,7 +31,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void addAndGet() throws SQLException {
+    public void addAndGet() {
         dao.deleteAll();
         assertEquals(dao.getCount(), 0);
 
@@ -52,7 +52,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void count() throws SQLException {
+    public void count() {
         dao.deleteAll();
         assertEquals(dao.getCount(), 0);
 
@@ -66,8 +66,33 @@ public class UserDaoTest {
         assertEquals(dao.getCount(), 3);
     }
 
+    @Test
+    public void getAll() {
+        dao.deleteAll();
+
+        Object[] users0 = dao.getAll().toArray();
+        Object[] answer0 = {};
+        assertArrayEquals(users0, answer0);
+
+        dao.add(user1);
+        Object[] users1 = dao.getAll().toArray();
+        Object[] answer1 = {user1};
+        assertArrayEquals(users1, answer1);
+
+        dao.add(user2);
+        Object[] users2 = dao.getAll().toArray();
+        Object[] answer2 = {user1, user2};
+        assertArrayEquals(users2, answer2);
+
+        dao.add(user3);
+        Object[] users3 = dao.getAll().toArray();
+        Object[] answer3 = {user3, user1, user2};
+        assertArrayEquals(users3, answer3);
+    }
+
+
     @Test(expected=EmptyResultDataAccessException.class)
-    public void getUserFailure() throws SQLException{
+    public void getUserFailure(){
         dao.deleteAll();
         assertEquals(dao.getCount(), 0);
         dao.get("1000");

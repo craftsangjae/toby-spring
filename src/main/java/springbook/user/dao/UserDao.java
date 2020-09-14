@@ -1,9 +1,12 @@
 package springbook.user.dao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import springbook.user.domain.User;
 
-import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 
 public class UserDao {
@@ -30,6 +33,16 @@ public class UserDao {
             user.setName(rs.getString("name"));
             user.setPassword(rs.getString("password"));
             return user; });
+    }
+
+    public List<User> getAll() {
+        return jdbcTemplate.query("SELECT * FROM users order by id", (rs, i) -> {
+            User user = new User();
+            user.setId(rs.getString("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+            return user;
+        });
     }
 
     public void deleteAll() {
