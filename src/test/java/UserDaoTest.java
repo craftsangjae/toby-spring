@@ -4,11 +4,13 @@ import static org.junit.Assert.*;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
+import springbook.user.exception.DuplicateUserIdException;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -47,6 +49,14 @@ public class UserDaoTest {
         assertEquals(userget2.getName(), user2.getName());
         assertEquals(userget2.getPassword(), user2.getPassword());
 
+    }
+    @Test(expected= DuplicateUserIdException.class)
+    public void addDuplicate() {
+        dao.deleteAll();
+        assertEquals(dao.getCount(), 0);
+
+        dao.add(user1);
+        dao.add(user1);
     }
 
     @Test
