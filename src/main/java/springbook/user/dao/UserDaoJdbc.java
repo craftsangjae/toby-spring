@@ -7,12 +7,15 @@ import springbook.user.domain.Level;
 import springbook.user.domain.User;
 import springbook.user.exception.DuplicateUserIdException;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 
 public class UserDaoJdbc implements UserDao {
 
+    private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
+
     private final RowMapper<User> userMapper = (resultSet, i) -> {
         User user = new User();
         user.setId(resultSet.getString("id"));
@@ -23,11 +26,13 @@ public class UserDaoJdbc implements UserDao {
         user.setRecommend(resultSet.getInt("recommend"));
         return user;};
 
-    public UserDaoJdbc() {}
+    public UserDaoJdbc(){}
 
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public UserDaoJdbc(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
+
+    public void setDataSource(DataSource dataSource) { jdbcTemplate = new JdbcTemplate(dataSource);}
 
     public void add(User user)  throws DuplicateUserIdException {
         try {
