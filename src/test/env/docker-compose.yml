@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  db:
+    image: mysql:5
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_USER=spring
+      - MYSQL_PASSWORD=book
+      - MYSQL_ALLOW_EMPTY_PASSWORD=example
+      - MYSQL_DATABASE=springbook
+    volumes:
+      - ./:/docker-entrypoint-initdb.d/
