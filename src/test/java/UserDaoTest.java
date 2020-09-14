@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import springbook.user.dao.UserDao;
+import springbook.user.domain.Level;
 import springbook.user.domain.User;
 import springbook.user.exception.DuplicateUserIdException;
 
@@ -25,9 +25,9 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
-        user1 = new User("gyumee", "박성철", "springno1");
-        user2 = new User("leegw700", "이길원", "springno2");
-        user3 = new User("bumjin", "박범진", "springno3");
+        user1 = new User("gyumee", "박성철", "springno1", Level.BASIC, 1, 0);
+        user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 55, 10);
+        user3 = new User("bumjin", "박범진", "springno3", Level.GOLD, 100, 40);
     }
 
     @Test
@@ -40,14 +40,10 @@ public class UserDaoTest {
         assertEquals(dao.getCount(), 2);
 
         User userget1 = dao.get(user1.getId());
-        assertEquals(userget1.getId(), user1.getId());
-        assertEquals(userget1.getName(), user1.getName());
-        assertEquals(userget1.getPassword(), user1.getPassword());
+        assertEquals(userget1, user1);
 
         User userget2 = dao.get(user2.getId());
-        assertEquals(userget2.getId(), user2.getId());
-        assertEquals(userget2.getName(), user2.getName());
-        assertEquals(userget2.getPassword(), user2.getPassword());
+        assertEquals(userget2, user2);
 
     }
     @Test(expected= DuplicateUserIdException.class)
@@ -97,6 +93,25 @@ public class UserDaoTest {
         Object[] answer3 = {user3, user1, user2};
         assertArrayEquals(users3, answer3);
     }
+
+    @Test
+    public void update() {
+        dao.deleteAll();
+
+        dao.add(user1);
+        dao.add(user2);
+
+        user1.setName("오민규");
+        user1.setPassword("springno6");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(1000);
+        user1.setRecommend(999);
+
+        dao.update(user1);
+        assertEquals(dao.get(user1.getId()), user1);
+        assertEquals(dao.get(user2.getId()), user2);
+    }
+
 
 
     @Test(expected=EmptyResultDataAccessException.class)
