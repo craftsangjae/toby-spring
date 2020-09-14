@@ -57,7 +57,7 @@ public class UserDaoJdbc implements UserDao {
         return jdbcTemplate.query("SELECT * FROM users order by id", userMapper);}
 
     public void deleteAll() {
-        jdbcTemplate.update("DELETE FROM users");
+        jdbcTemplate.update("TRUNCATE users");
     }
 
     public int getCount() {
