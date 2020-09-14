@@ -52,7 +52,15 @@ public class User {
         this.level = level;
     }
 
-    public void upgradeLevel() { this.level = this.level.nextLevel(); }
+    public void upgradeLevel() {
+        Level nextLevel = this.level.nextLevel();
+        if (nextLevel == null) {
+            throw new IllegalStateException(this.level + "은 업그레이드가 불가합니다.");
+        }
+        else {
+            this.level = nextLevel;
+        }
+    }
 
     public int getLogin() {
         return login;
